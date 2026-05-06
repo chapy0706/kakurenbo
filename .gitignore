@@ -1,0 +1,39 @@
+# --- VSCode settings ---
+.vscode/*
+!.vscode/settings.json
+
+# Node
+node_modules/
+**/node_modules/
+
+# pnpm store
+.pnpm-store/
+
+# Next.js
+.next/
+out/
+
+# Logs
+logs/
+*.log
+
+# OS / Editor files
+.DS_Store
+.idea/
+
+# Build artifacts
+dist/
+build/
+
+# Test output
+playwright-report/
+test-results/
+coverage/
+apps/user/.env.local
+apps/admin/.env.local
+.env
+.env.development.local
+
+#keys
+apps/user/certificates
+.ai/handoff/*.txt
