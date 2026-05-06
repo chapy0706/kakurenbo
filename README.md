@@ -21,6 +21,7 @@
 | リアルタイム通信 | Socket.io                         | WebSocketによるプレイヤー間同期        |
 | ORM              | Drizzle ORM                       | 型安全なDB操作                         |
 | データベース     | PostgreSQL                        | 森データ、ユーザー、対戦履歴           |
+| パッケージ管理   | pnpm (workspaces)                 | モノレポのパッケージ管理               |
 | デプロイ         | Vercel + Cloudflare               | staging / prod 自動デプロイ            |
 
 ## 設計思想
@@ -35,7 +36,8 @@
 ```
 kakurenbo/
 ├── README.md
-├── package.json                        # npm workspaces ルート定義
+├── package.json                        # pnpm workspaces ルート定義
+├── pnpm-workspace.yaml                 # ワークスペース設定
 ├── Makefile                            # check / dev / lint / test
 ├── .github/
 │   └── workflows/
@@ -181,13 +183,26 @@ git clone https://github.com/chapy0706/kakurenbo.git
 cd kakurenbo
 
 # 依存のインストール（全パッケージ一括）
-npm install
+pnpm install
 
 # 開発サーバーの起動
 make dev
 ```
 
 `make dev` で WebSocketサーバーとNext.js開発サーバーが同時に起動する。
+
+### pnpm のインストール
+
+pnpm が未インストールの場合は、以下のいずれかでインストールする。
+
+```bash
+# Node.js corepack 経由（推奨）
+corepack enable
+corepack prepare pnpm@latest --activate
+
+# npm 経由
+npm install -g pnpm
+```
 
 ## コマンド一覧(案)
 
@@ -200,6 +215,8 @@ make dev
 | `make lint`       | ESLintの実行                                    |
 | `make type-check` | TypeScriptの型チェック                          |
 | `make test`       | Vitestでテスト実行                              |
+| `make install`    | 全パッケージの依存インストール                  |
+| `make clean`      | node_modules / ビルド成果物の削除               |
 
 ## ブランチ戦略
 
