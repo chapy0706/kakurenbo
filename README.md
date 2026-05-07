@@ -36,9 +36,26 @@
 ```
 kakurenbo/
 ├── README.md
+├── CLAUDE.md                           # Claude Code エントリーポイント
 ├── package.json                        # pnpm workspaces ルート定義
 ├── pnpm-workspace.yaml                 # ワークスペース設定
 ├── Makefile                            # check / dev / lint / test
+├── .claude/
+│   ├── README.md                       # .claude ディレクトリの説明
+│   ├── settings.json                   # パーミッション・hooks設定
+│   ├── rules/
+│   │   ├── 01-architecture.md          # アーキテクチャ制約
+│   │   ├── 02-security.md              # セキュリティルール
+│   │   └── 03-token.md                 # トークン節約ルール
+│   ├── hooks/
+│   │   ├── block-dangerous.sh          # 危険コマンドのブロック
+│   │   └── protect-secrets.sh          # 機密ファイルの読み取り防止
+│   └── skills/
+│       ├── domain-model.md             # Entity / VO の作成パターン
+│       ├── usecase.md                  # ユースケースの作成パターン
+│       ├── react-component.md          # Reactコンポーネントの作成パターン
+│       ├── websocket-message.md        # WebSocketメッセージ型の追加パターン
+│       └── test.md                     # テストの書き方
 ├── .github/
 │   └── workflows/
 │       └── ci.yml                      # staging push時の自動CI
