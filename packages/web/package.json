@@ -1,0 +1,7 @@
+{
+  "name": "@kakurenbo/web",
+  "version": "0.0.0",
+  "devDependencies": {
+    "typescript": "^5.4.0"
+  }
+}
