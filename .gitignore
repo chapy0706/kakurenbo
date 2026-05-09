@@ -24,6 +24,7 @@ logs/
 # Build artifacts
 dist/
 build/
+packages/server/dist/
 
 # Test output
 playwright-report/

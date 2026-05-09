@@ -3,7 +3,8 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import type { ClientMessage, ServerMessage, Position, PlayerState } from "@kakurenbo/shared";
 
-const PORT = 3001;
+const PORT = process.env.PORT ?? 3001;
+const CORS_ORIGIN = process.env.CORS_ORIGIN ?? "http://localhost:3000";
 
 type PlayerRecord = {
   name: string;
@@ -15,7 +16,7 @@ type PlayerRecord = {
 const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
-  cors: { origin: "http://localhost:3000" },
+  cors: { origin: CORS_ORIGIN },
 });
 
 const players = new Map<string, PlayerRecord>();
