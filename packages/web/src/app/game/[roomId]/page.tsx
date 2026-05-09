@@ -1,16 +1,17 @@
 "use client";
 
-import { useState } from "react";
-import { useParams } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { GameCanvas } from "@/components/game/GameCanvas";
 import { ConnectionStatus } from "@/components/game/ConnectionStatus";
 import { useRealTime } from "@/hooks/useRealTime";
 
-export default function GamePage() {
-  const params = useParams();
-  const roomId = typeof params.roomId === "string" ? params.roomId : "test-room";
-  const [playerName] = useState(() => `プレイヤー${Math.floor(Math.random() * 100)}`);
+interface GameRoomProps {
+  roomId: string;
+  playerName: string;
+}
 
+function GameRoom({ roomId, playerName }: GameRoomProps) {
   const { isConnected, players, playerId, sendMove, sendHide } = useRealTime({ roomId, playerName });
 
   return (
@@ -19,4 +20,24 @@ export default function GamePage() {
       <ConnectionStatus isConnected={isConnected} playerCount={players.size + 1} />
     </main>
   );
+}
+
+export default function GamePage() {
+  const params = useParams();
+  const router = useRouter();
+  const roomId = typeof params.roomId === "string" ? params.roomId : "test-room";
+  const [playerName, setPlayerName] = useState<string | null>(null);
+
+  useEffect(() => {
+    const name = sessionStorage.getItem("playerName");
+    if (!name) {
+      router.replace("/");
+      return;
+    }
+    setPlayerName(name);
+  }, [router]);
+
+  if (!playerName) return null;
+
+  return <GameRoom roomId={roomId} playerName={playerName} />;
 }
