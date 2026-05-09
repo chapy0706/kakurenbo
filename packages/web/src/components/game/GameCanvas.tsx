@@ -1,8 +1,8 @@
 "use client";
 
 import { type FC, useRef, useEffect, useCallback } from "react";
-import { GAME_CONFIG } from "@kakurenbo/shared";
-import type { Position } from "@kakurenbo/shared";
+import { GAME_CONFIG, HIDING_SPOTS } from "@kakurenbo/shared";
+import type { Position, HidingSpot } from "@kakurenbo/shared";
 import type { RemotePlayer } from "@/hooks/useRealTime";
 
 const { PLAYER_SPEED, PLAYER_RADIUS, TILE_SIZE } = GAME_CONFIG;
@@ -13,6 +13,33 @@ function hashColor(id: string): string {
   let hash = 0;
   for (const ch of id) hash = (hash * 31 + ch.charCodeAt(0)) & 0xffff;
   return REMOTE_COLORS[hash % REMOTE_COLORS.length];
+}
+
+function drawHidingSpot(ctx: CanvasRenderingContext2D, spot: HidingSpot) {
+  const cx = spot.x + spot.width / 2;
+  const cy = spot.y + spot.height / 2;
+
+  if (spot.type === "rock") {
+    ctx.fillStyle = "#888888";
+    ctx.beginPath();
+    ctx.ellipse(cx, cy, spot.width / 2, spot.height / 2, 0, 0, Math.PI * 2);
+    ctx.fill();
+  } else if (spot.type === "bush") {
+    ctx.fillStyle = "#2D5F2C";
+    ctx.beginPath();
+    ctx.arc(cx, cy, spot.width / 2, 0, Math.PI * 2);
+    ctx.fill();
+  } else {
+    // tree: 幹（下）+ 葉（上）
+    const trunkW = 20;
+    const trunkH = Math.floor(spot.height * 0.35);
+    ctx.fillStyle = "#5C4033";
+    ctx.fillRect(cx - trunkW / 2, spot.y + spot.height - trunkH, trunkW, trunkH);
+    ctx.fillStyle = "#3A7D32";
+    ctx.beginPath();
+    ctx.arc(cx, spot.y + (spot.height - trunkH) / 2, spot.width / 2, 0, Math.PI * 2);
+    ctx.fill();
+  }
 }
 
 function drawPlayer(
@@ -95,6 +122,9 @@ export const GameCanvas: FC<GameCanvasProps> = ({ players, myPlayerId, onMove })
       for (let y = 0; y <= height; y += TILE_SIZE) {
         ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
       }
+
+      // 隠れ場所
+      for (const spot of HIDING_SPOTS) drawHidingSpot(ctx, spot);
 
       // 自キャラ移動
       const pos = posRef.current;
