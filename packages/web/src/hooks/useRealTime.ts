@@ -1,6 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { io, type Socket } from "socket.io-client";
+import { GAME_CONFIG } from "@kakurenbo/shared";
 import type { Position, PlayerState, ServerMessage, ClientMessage } from "@kakurenbo/shared";
+
+const { SEND_INTERVAL_MS } = GAME_CONFIG;
 
 interface UseRealTimeParams {
   serverUrl?: string;
@@ -32,6 +35,9 @@ export function useRealTime({
   const [playerId, setPlayerId] = useState<string | null>(null);
   const [players, setPlayers] = useState<Map<string, RemotePlayer>>(new Map());
   const socketRef = useRef<Socket | null>(null);
+  const lastSentAtRef = useRef<number>(0);
+  const pendingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastPosRef = useRef<Position | null>(null);
 
   useEffect(() => {
     const socket = io(serverUrl);
@@ -79,11 +85,34 @@ export function useRealTime({
     return () => {
       socket.disconnect();
       socketRef.current = null;
+      if (pendingTimerRef.current) clearTimeout(pendingTimerRef.current);
     };
   }, [serverUrl, roomId, playerName]);
 
   const sendMove = useCallback((position: Position) => {
-    socketRef.current?.emit("message", { type: "move", position } satisfies ClientMessage);
+    lastPosRef.current = position;
+    const now = Date.now();
+    const elapsed = now - lastSentAtRef.current;
+
+    const emit = (pos: Position) => {
+      socketRef.current?.emit("message", { type: "move", position: pos } satisfies ClientMessage);
+      lastSentAtRef.current = Date.now();
+    };
+
+    if (elapsed >= SEND_INTERVAL_MS) {
+      if (pendingTimerRef.current) {
+        clearTimeout(pendingTimerRef.current);
+        pendingTimerRef.current = null;
+      }
+      emit(position);
+    } else {
+      // trailing: 残り時間後に最終位置を送信
+      if (pendingTimerRef.current) clearTimeout(pendingTimerRef.current);
+      pendingTimerRef.current = setTimeout(() => {
+        if (lastPosRef.current) emit(lastPosRef.current);
+        pendingTimerRef.current = null;
+      }, SEND_INTERVAL_MS - elapsed);
+    }
   }, []);
 
   const sendHide = useCallback(() => {

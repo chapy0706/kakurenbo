@@ -4,6 +4,7 @@ export const GAME_CONFIG = {
   PLAYER_SPEED: 3,
   PLAYER_RADIUS: 16,
   TILE_SIZE: 40,
+  SEND_INTERVAL_MS: 60,
 } as const;
 
 export type HidingSpotType = "rock" | "bush" | "tree";
