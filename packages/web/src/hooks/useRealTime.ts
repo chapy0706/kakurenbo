@@ -8,7 +8,7 @@ interface UseRealTimeParams {
   playerName: string;
 }
 
-interface RemotePlayer {
+export interface RemotePlayer {
   id: string;
   name: string;
   position: Position;
