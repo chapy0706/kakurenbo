@@ -212,6 +212,11 @@ export const GameCanvas: FC<GameCanvasProps> = ({ players, myPlayerId: _myPlayer
         }
 
         drawPlayer(ctx, rp.x, rp.y, hashColor(id), player.name, player.state === "hiding" ? 0.4 : 1);
+        if (player.stamp) {
+          ctx.font = "20px sans-serif";
+          ctx.textAlign = "center";
+          ctx.fillText(player.stamp, rp.x, rp.y - PLAYER_RADIUS - 20);
+        }
       }
 
       // 自キャラ（最前面）

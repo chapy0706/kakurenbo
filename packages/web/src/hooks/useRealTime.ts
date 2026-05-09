@@ -16,6 +16,7 @@ export interface RemotePlayer {
   name: string;
   position: Position;
   state: PlayerState;
+  stamp?: string;
 }
 
 interface UseRealTimeReturn {
@@ -24,6 +25,7 @@ interface UseRealTimeReturn {
   players: Map<string, RemotePlayer>;
   sendMove: (position: Position) => void;
   sendHide: () => void;
+  sendStamp: (stampId: string) => void;
 }
 
 export function useRealTime({
@@ -79,6 +81,22 @@ export function useRealTime({
           next.delete(msg.playerId);
           return next;
         });
+      } else if (msg.type === "stamp_received") {
+        const { playerId: pid, stampId } = msg;
+        setPlayers((prev) => {
+          const next = new Map(prev);
+          const player = next.get(pid);
+          if (player) next.set(pid, { ...player, stamp: stampId });
+          return next;
+        });
+        setTimeout(() => {
+          setPlayers((prev) => {
+            const next = new Map(prev);
+            const player = next.get(pid);
+            if (player) next.set(pid, { ...player, stamp: undefined });
+            return next;
+          });
+        }, 2000);
       }
     });
 
@@ -119,5 +137,9 @@ export function useRealTime({
     socketRef.current?.emit("message", { type: "hide" } satisfies ClientMessage);
   }, []);
 
-  return { isConnected, playerId, players, sendMove, sendHide };
+  const sendStamp = useCallback((stampId: string) => {
+    socketRef.current?.emit("message", { type: "stamp", stampId } satisfies ClientMessage);
+  }, []);
+
+  return { isConnected, playerId, players, sendMove, sendHide, sendStamp };
 }

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { GameCanvas } from "@/components/game/GameCanvas";
 import { ConnectionStatus } from "@/components/game/ConnectionStatus";
+import { StampButton } from "@/components/game/StampButton";
 import { useRealTime } from "@/hooks/useRealTime";
 
 interface GameRoomProps {
@@ -12,12 +13,13 @@ interface GameRoomProps {
 }
 
 function GameRoom({ roomId, playerName }: GameRoomProps) {
-  const { isConnected, players, playerId, sendMove, sendHide } = useRealTime({ roomId, playerName });
+  const { isConnected, players, playerId, sendMove, sendHide, sendStamp } = useRealTime({ roomId, playerName });
 
   return (
     <main className="h-dvh overflow-hidden">
       <GameCanvas players={players} myPlayerId={playerId} onMove={sendMove} onHide={sendHide} />
       <ConnectionStatus isConnected={isConnected} playerCount={players.size + 1} />
+      <StampButton onSend={sendStamp} />
     </main>
   );
 }

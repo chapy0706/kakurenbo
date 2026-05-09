@@ -73,6 +73,14 @@ io.on("connection", (socket) => {
       const hidden: ServerMessage = { type: "player_hidden", playerId: socket.id };
       socket.to(player.roomId).emit("message", hidden);
     }
+
+    if (msg.type === "stamp") {
+      const player = players.get(socket.id);
+      if (!player) return;
+
+      const stamp: ServerMessage = { type: "stamp_received", playerId: socket.id, stampId: msg.stampId };
+      socket.to(player.roomId).emit("message", stamp);
+    }
   });
 
   socket.on("disconnect", () => {
