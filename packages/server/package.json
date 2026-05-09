@@ -3,12 +3,17 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "dev": "tsx watch src/index.ts",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@kakurenbo/shared": "workspace:*"
+    "@kakurenbo/shared": "workspace:*",
+    "express": "^5.2.1",
+    "socket.io": "^4.8.3"
   },
   "devDependencies": {
+    "@types/express": "^5.0.6",
+    "tsx": "^4.21.0",
     "typescript": "^5.4.0"
   }
 }
