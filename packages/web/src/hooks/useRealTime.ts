@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { io, type Socket } from "socket.io-client";
-import type { Position, ServerMessage, ClientMessage } from "@kakurenbo/shared";
+import type { Position, PlayerState, ServerMessage, ClientMessage } from "@kakurenbo/shared";
 
 interface UseRealTimeParams {
   serverUrl?: string;
@@ -12,6 +12,7 @@ export interface RemotePlayer {
   id: string;
   name: string;
   position: Position;
+  state: PlayerState;
 }
 
 interface UseRealTimeReturn {
@@ -19,6 +20,7 @@ interface UseRealTimeReturn {
   playerId: string | null;
   players: Map<string, RemotePlayer>;
   sendMove: (position: Position) => void;
+  sendHide: () => void;
 }
 
 export function useRealTime({
@@ -55,7 +57,14 @@ export function useRealTime({
         setPlayers((prev) => {
           const next = new Map(prev);
           const player = next.get(msg.playerId);
-          if (player) next.set(msg.playerId, { ...player, position: msg.position });
+          if (player) next.set(msg.playerId, { ...player, position: msg.position, state: "moving" });
+          return next;
+        });
+      } else if (msg.type === "player_hidden") {
+        setPlayers((prev) => {
+          const next = new Map(prev);
+          const player = next.get(msg.playerId);
+          if (player) next.set(msg.playerId, { ...player, state: "hiding" });
           return next;
         });
       } else if (msg.type === "player_left") {
@@ -77,5 +86,9 @@ export function useRealTime({
     socketRef.current?.emit("message", { type: "move", position } satisfies ClientMessage);
   }, []);
 
-  return { isConnected, playerId, players, sendMove };
+  const sendHide = useCallback(() => {
+    socketRef.current?.emit("message", { type: "hide" } satisfies ClientMessage);
+  }, []);
+
+  return { isConnected, playerId, players, sendMove, sendHide };
 }
