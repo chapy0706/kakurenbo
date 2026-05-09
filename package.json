@@ -6,12 +6,24 @@
     "node": ">=20"
   },
   "devDependencies": {
-    "typescript": "^5.4.0"
+    "@types/node": "^25.6.2",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@typescript-eslint/eslint-plugin": "^8.59.2",
+    "@typescript-eslint/parser": "^8.59.2",
+    "eslint": "^10.3.0",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.6.0",
+    "typescript": "^5.4.0",
+    "vitest": "^4.1.5"
   },
   "pnpm": {
-    "onlyBuiltDependencies": [
-      "esbuild"
-    ]
+    "onlyBuiltDependencies": ["esbuild"],
+    "packageImportMethod": "copy",
+    "overrides": {
+      "resolve": "^1.22.8"
+    }
   },
   "packageManager": "pnpm@10.26.1+sha256.e8e6e499128f6804f5c92223cd1f2e3f62557102c0c6e254cc99bb2aa229bbf9"
 }

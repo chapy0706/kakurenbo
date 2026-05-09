@@ -4,7 +4,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "type-check": "tsc --noEmit"
+    "lint": "eslint src",
+    "type-check": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
     "@kakurenbo/shared": "workspace:*",
