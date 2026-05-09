@@ -1,0 +1,7 @@
+export const GAME_CONFIG = {
+  MAP_WIDTH: 800,
+  MAP_HEIGHT: 600,
+  PLAYER_SPEED: 3,
+  PLAYER_RADIUS: 16,
+  TILE_SIZE: 40,
+} as const;
