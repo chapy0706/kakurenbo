@@ -2,12 +2,22 @@
   "name": "@kakurenbo/web",
   "version": "0.0.0",
   "scripts": {
+    "dev": "next dev",
+    "build": "next build",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@kakurenbo/shared": "workspace:*"
+    "@kakurenbo/shared": "workspace:*",
+    "@tailwindcss/postcss": "^4.3.0",
+    "next": "^16.2.6",
+    "react": "^19.2.6",
+    "react-dom": "^19.2.6",
+    "tailwindcss": "^4.3.0"
   },
   "devDependencies": {
+    "@types/node": "^25.6.2",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
     "typescript": "^5.4.0"
   }
 }
